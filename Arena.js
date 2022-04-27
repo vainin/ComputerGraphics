@@ -159,11 +159,7 @@ function init() {
     
     thetaLoc = gl.getUniformLocation(program, "u_theta");
 
-    document.getElementById("ButtonX").onclick = function(){axis = xAxis;};
-    document.getElementById("ButtonY").onclick = function(){axis = yAxis;};
-    document.getElementById("ButtonZ").onclick = function(){axis = zAxis;};
-    document.getElementById("ButtonT").onclick = function(){flag = !flag;};
-
+    
 
     //set up screen
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height); 
