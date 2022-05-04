@@ -75,52 +75,25 @@
 <body onload="init();">
 	<h2>Shoot and Score!</h2>
     
-	<div><label> High Score:</label><label id="highscore">0</label></div>
-	<div><label> User Score:</label><label id="userscore">0</label></div>
+	<div><label> High Score: </label><label id="highscore">0</label></div>
+	<div><label> User Score: </label><label id="userscore">0</label></div>
+	<div><label for="timertext">Timer: </label>
+	<input type="text" id="timertext" name="timertext" value = "60 sec"></div>
+	<!--<div><label> Timer:</label><label id="timertext" text="60"></label></div> -->
 	
     <style type="text/css">
         canvas { background: gray; }
     </style>
 
-    <button id = "startButton" onclick="setInterval(myFunction, 100)">Start Game</button>
-    <script>
-		let x = 1.0;
-		let y = 1.0;
-		function myFunction() {
-			if(powerSlider.value == powerSlider.max){
-				x = -0.1;
-			}
-			else if(powerSlider.value == powerSlider.min){
-				x = 0.1;
-			}
-			else{
-				powerSlider.value == powerSlider.value + x;
-			}
-			if(directionSlider.value = directionSlider.max){
-				y = -1.0;
-			}
-			else if(directionSlider.value == directionSlider.min){
-				y = 1.0;
-			}
-			else{
-				directionSlider.value == directionSlider.value + y;
-			}
-
-		}
-	</script>   
+    <button id = "startButton" onclick="startgame()">Start Game</button>
+  
         
     
     <canvas id="gl-canvas" width="512" height="512">
         Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
-    <div>
-        Power 0<input id="powerSlider" type="range" min="0.0" max="100.0" step="0.01" value="50.0" />
-        100
-    </div>
-	<div>
-        Direction -180<input id="directionSlider" type="range" min="-180" max="180" step="0.01" value="0.0" />
-        180
-    </div>
+    
+
     <img id = "texImage" src = "sky.jpg" hidden></img>
     
 </body>
