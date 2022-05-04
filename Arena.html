@@ -70,6 +70,7 @@
 	<!--   JS include files -->
 	<script type="text/javascript" src="CS371utils.js"></script>
 	<script type="text/javascript" src="Arena.js"></script>
+    <script type="text/javascript" src="models/HoopsArcade2 - Copy.js"></script>
 </head>
 
 <body onload="init();">
@@ -108,7 +109,25 @@
 
 		}
 	</script>   
-        
+    
+    <div>
+        <button id = "Button1">Increase Near and Far</button>
+        <button id = "Button2">Decrease Near and Far</button>
+        <button id = "Button3">Increase R</button>
+        <button id = "Button4">Decrease R</button>
+
+        <br>
+        <button id = "Button5">Increase theta</button>
+        <button id = "Button6">Decrease theta</button>
+        <button id = "Button7">Increase phi</button>
+        <button id = "Button8">Decrease phi</button>
+        <br>
+        <button id = "Button9">Wider</button>
+        <button id = "Button10">Narrower</button>
+        <button id = "Button11">Higher</button>
+        <button id = "Button12">Shorter</button>
+        <p>In case you don't see the entire object, you may have to play with the Near, Far, and R settings to get the appropriate view volume </p>            
+    </div>    
     
     <canvas id="gl-canvas" width="512" height="512">
         Oops ... your browser doesn't support the HTML5 canvas element
@@ -121,7 +140,7 @@
         Direction -180<input id="directionSlider" type="range" min="-180" max="180" step="0.01" value="0.0" />
         180
     </div>
-    <img id = "texImage" src = "sky.jpg" hidden></img>
+    <img id = "texImage" src = "textures/dummy.png" hidden></img>
     
 </body>
 </html>
