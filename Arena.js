@@ -183,3 +183,56 @@ function draw() {
     gl.drawArrays(gl.TRIANGLES, 0, numPositions);
     requestAnimationFrame(draw);
 }
+
+function startgame(){
+	resetgame();
+	clearInterval(timer);
+	timer= setInterval(settimer,1000); 
+	/*
+	gametime = 60;
+	document.getElementById("timertext").Text = gametime;
+	while(gametime > 0){
+		setTimeout(countdown(), 1000);
+	}
+	//document.getElementById("Button2").onclick = function(){theta += dr;};
+	*/
+}
+function settimer(){
+	if(timelimit > 0){
+		timelimit--;
+		timegone++;
+		document.getElementById("timertext").value = timelimit + " sec";//textContent = timelimit + " secs";
+	}
+	else{
+		endgame();
+	}
+}
+function resetgame(){
+	timelimit = 60;
+	timegone = 0;
+	
+}
+function endgame(){
+	clearInterval(timer);
+	
+}
+
+function countdown(){
+	gametime--;
+	document.getElementById("timertext").value = gametime.toString();
+}
+
+function shoot(){
+	
+}
+
+function keydown(ev) {
+    switch (ev.keyCode) {
+		case 32: // spacebar
+			shoot();
+			break;
+        default: return; // Skip drawing if no effective action
+    }
+}
+
+
