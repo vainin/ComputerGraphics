@@ -13,6 +13,11 @@ let colorsArray = [];
 let texCoordsArray = [];
 
 let texture;
+let timelimit = 60;
+let timegone = 0;
+let timer;
+let shootable = false;
+
 
 let texCoord = [
     vec2(0, 0),
@@ -187,7 +192,7 @@ function draw() {
 function startgame(){
 	resetgame();
 	clearInterval(timer);
-	timer= setInterval(settimer,1000); 
+	timer = setInterval(settimer,1000); 
 	/*
 	gametime = 60;
 	document.getElementById("timertext").Text = gametime;
@@ -210,20 +215,19 @@ function settimer(){
 function resetgame(){
 	timelimit = 60;
 	timegone = 0;
+	shootable = true;
 	
 }
 function endgame(){
 	clearInterval(timer);
+	shootable = false;
 	
-}
-
-function countdown(){
-	gametime--;
-	document.getElementById("timertext").value = gametime.toString();
 }
 
 function shoot(){
-	
+	if(shootable){
+		
+	}
 }
 
 function keydown(ev) {
