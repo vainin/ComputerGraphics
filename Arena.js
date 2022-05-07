@@ -216,6 +216,7 @@ function resetgame(){
 	timelimit = 60;
 	timegone = 0;
 	shootable = true;
+	document.getElementById("userscore").value = "0";
 	
 }
 function endgame(){
