@@ -2,6 +2,13 @@
 
 let gl;
 
+let timelimit = 60;
+let timegone = 0;
+let timer;
+let shootable = false;
+
+//above is needed code
+
 let numPositions  = 36;
 
 let texSize = 64;
@@ -13,10 +20,7 @@ let colorsArray = [];
 let texCoordsArray = [];
 
 let texture;
-let timelimit = 60;
-let timegone = 0;
-let timer;
-let shootable = false;
+
 
 
 let texCoord = [
@@ -189,18 +193,12 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
+//below is needed code
 function startgame(){
 	resetgame();
 	clearInterval(timer);
 	timer = setInterval(settimer,1000); 
-	/*
-	gametime = 60;
-	document.getElementById("timertext").Text = gametime;
-	while(gametime > 0){
-		setTimeout(countdown(), 1000);
-	}
-	//document.getElementById("Button2").onclick = function(){theta += dr;};
-	*/
+
 }
 function settimer(){
 	if(timelimit > 0){
@@ -217,17 +215,21 @@ function resetgame(){
 	timegone = 0;
 	shootable = true;
 	document.getElementById("userscore").value = "0";
+	document.getElementById("timertext").Text = timelimit;
+	//need to disable startbutton until game ends
 	
 }
 function endgame(){
 	clearInterval(timer);
 	shootable = false;
+	//enable startbutton
+	//compare scores to update highscore
 	
 }
 
 function shoot(){
 	if(shootable){
-		
+		//needs create basketball that moves towards hoop
 	}
 }
 
