@@ -61,7 +61,7 @@ let theta = vec3(45.0, 45.0, 45.0);
 let thetaLoc;
 
 //Added May 9
-let materialDiffuseBall =  vec4( 0.0, 1.0, 0.0, 1.0); 
+let materialDiffuseBall =  vec4( 1.0, 0.65, 0.0, 1.0); 
 let materialAmbientBall =  vec4( 1.0, 1.0, 1.0, 1.0 ); 
 let materialSpecularBall = vec4( 1.0, 1.0, 1.0, 1.0 );
 
