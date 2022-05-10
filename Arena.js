@@ -60,6 +60,15 @@ let theta = vec3(45.0, 45.0, 45.0);
 
 let thetaLoc;
 
+//Added May 9
+let materialDiffuseBall =  vec4( 0.0, 1.0, 0.0, 1.0); 
+let materialAmbientBall =  vec4( 1.0, 1.0, 1.0, 1.0 ); 
+let materialSpecularBall = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+let basketball = createSphereVertices(0.15, 30, 30,);
+let vaoball = setUpVertexObject(basketball);
+//
+
 function configureTexture( image, program ) {
     texture = gl.createTexture();
     gl.activeTexture( gl.TEXTURE0 );  //0 active by default
@@ -183,6 +192,56 @@ function init() {
     draw();
 
 }
+
+
+function drawVertexObject(vao, iLength, mA, mD, mS, s){
+    let ambientProduct = mult(lightAmbient, mA);
+    let diffuseProduct = mult(lightDiffuse, mD);
+    let specularProduct = mult(lightSpecular, mS);
+    gl.uniform1f(gl.getUniformLocation(program, "shininess"),s);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),flatten(diffuseProduct) );
+    gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(specularProduct) );	
+    gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition) );    
+    
+    gl.bindVertexArray(vao);
+    gl.drawElements( gl.TRIANGLES, iLength, gl.UNSIGNED_SHORT, 0 );     
+}
+
+//Sets up a VAO 
+function setUpVertexObject(shape){
+    let indices = shape.indices;
+    let vertices = shape.positions;
+    let normals = shape.normals;
+ 
+    vao = gl.createVertexArray(); 
+    gl.bindVertexArray(vao); 
+    
+    //set up index buffer, if using
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());    
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STREAM_DRAW);
+    
+    //For each attribute (e.g. each of vertices, normal, color, etc.)
+ 
+    //set up vertices buffer
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); 
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STREAM_DRAW);
+    let attributeCoords  = gl.getAttribLocation(program, "a_coords"); 
+    gl.vertexAttribPointer(attributeCoords, 3, gl.FLOAT, false, 0, 0);  
+    gl.enableVertexAttribArray(attributeCoords);
+ 
+    //set up normals buffer
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); 
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(normals), gl.STREAM_DRAW);
+    let attributeNormals = gl.getAttribLocation( program, "a_normals" );
+    gl.vertexAttribPointer( attributeNormals, 3, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( attributeNormals );
+    
+    //finalize the vao; not required, but considered good practice
+    gl.bindVertexArray(null); 
+    return vao;
+}
+
 
 function draw() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
