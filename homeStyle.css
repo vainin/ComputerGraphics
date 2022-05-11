@@ -1,0 +1,11 @@
+
+body {
+    margin: 0;
+    background-color: #474747;
+    background-image: url("textures/background.jpg");
+}
+
+canvas {
+    margin: auto;
+    width: 50%;
+}
