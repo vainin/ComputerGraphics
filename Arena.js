@@ -40,7 +40,8 @@ let program;
 let vaos = [];
 let shapes;
 
-let tex;
+
+let textures = [];
 
 let machine = {
     positions: coords,
@@ -51,8 +52,9 @@ let machine = {
 
 
 
-let coords2 = shoeMesh.vertices[0].values;
-let indices2 = shoeMesh.connectivity[0].indices;
+let coords2 = myShoe.vertices[0].values;
+let indices2 = myShoe.connectivity[0].indices;
+let normals2 = 
 
 let shoe = {
     positions: coords2,
@@ -84,31 +86,68 @@ vec4(0.2, 0.2, 1, 1.0),
 vec4(.75, .24, 1, 1.0)];
 let materialShininess = 100.0;
 
-function configureTexture(image, program) {
-    texture = gl.createTexture();
-    gl.activeTexture(gl.TEXTURE0);  //0 active by default
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+function configureTexture( image, program, textureNum ) {
+    let texture = gl.createTexture();
 
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    
     //Flip the Y values to match the WebGL coordinates
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
+    
     //Specify the image as a texture array:
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-
+         
     //Set filters and parameters
     gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
+    
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT );
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT );
+    
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT );
+    
     //Link texture to a sampler in fragment shader
+    return texture;
+}
+
+function configureTexture( image, program ) {
+    let texture = gl.createTexture();
+
+    gl.activeTexture( gl.TEXTURE0 );
+
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    
+    // Flip the Y values to match the WebGL coordinates
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    
+    // Specify the image as a texture array:
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+         
+    // Set filters and parameters
+    gl.generateMipmap(gl.TEXTURE_2D);
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT );
+    
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT );
+    
+    // Link texture to a sampler in fragment shader
     gl.uniform1i(gl.getUniformLocation(program, "u_textureMap"), 0);
+
+    return texture;
 }
 
 
 
 function init() {
-    console.log(shoe);
-    console.log(machine);
+
+    
+
     //Get graphics context
     let canvas = document.getElementById("gl-canvas");
     let options = {  // no need for alpha channel, but note depth buffer enabling
@@ -125,27 +164,33 @@ function init() {
 
     shapes = [
         [machine, mat4()],
-        [shoe,  mat4()],
-        [createSphereVertices(1, 30, 30),  mat4()]
+        [shoe, mat4()],
+        [createSphereVertices(1, 30, 30), mat4()]
     ];
 
-   
-    
+
+
     setUpShapes();
-    
 
-   
-
-
+    document.getElementById("xButton").onclick = function () {
+        rX(shapes[0][1]);
+    };
+    document.getElementById("yButton").onclick = function () {
+        rY(shapes[0][1]);
+    };
+    document.getElementById("zButton").onclick = function () {
+        rZ(shapes[0][1]);
+    };
 
     for (let i = 0; i < shapes.length; i++) {
         vaos.push(setUpVertexObject(shapes[i][0]));
-    }
 
-    let pic = new Image();
-    pic.src = document.getElementById("image").src;
-    pic.onload = function () {
-        configureTexture(pic, program);
+        let pic = new Image();
+        pic.src = document.getElementById("image" + i).src;
+        pic.onload = function () {
+            configureTexture(pic, program, i);
+        }
+        textures.push(configureTexture(pic,program));
     }
 
     //set up uniform variables
@@ -167,18 +212,27 @@ function init() {
     draw();
 }
 
-function setUpShapes(){
+function setUpShapes() {
     // shapes[1][1] = mult(shapes[1][1], rotateZ(90));
     // shapes[1][1] = mult(shapes[1][1], rotateY(90));
-    // shapes[1][1] = mult(shapes[1][1], rotateZ(90));
-    // shapes[1][1] = mult(shapes[1][1],translate(1,0,-100));
-    // shapes[0][1] = mult(shapes[0][1],translate(1,0,-10));
-    //shapes[0][1] = mult(shapes[0][1],scalem(5,5,5));
-    shapes[0][1] = mult(shapes[0][1],rotateY(90));
+     //shapes[1][1] = mult(shapes[1][1], rotateZ(90));
+    // shapes[1][1] = mult(shapes[1][1],translate(1,0,-1));
+    shapes[0][1] = mult(shapes[0][1],translate(0,0,-10));
+    shapes[0][1] = mult(shapes[0][1], rotateY(-90));
+    shapes[0][1] = mult(shapes[0][1], scalem(3,3,3));
 }
 
 function lR() {
     radius *= 0.9;
+}
+
+function drawTexture(textureObj, program, i)
+{
+    gl.activeTexture( gl.TEXTURE0 + i );
+
+    gl. bindTexture(gl.TEXTURE_2D, textureObj);
+
+    gl.uniform1i(gl.getUniformLocation(program, "u_textureMap"), i);
 }
 
 
@@ -203,9 +257,25 @@ function draw() {
         modelViewMatrix = (mult(modelViewMatrix, shapes[i][1]));
         gl.uniformMatrix4fv(uniformModelView, false, flatten(modelViewMatrix));
         drawVertexObject(vaos[i], shapes[i][0].indices.length, materialAmbient[i], materialDiffuse[i], materialSpecular[i], materialShininess / (i + 1));
+        drawTexture(textures[i], program, i);
     }
-    
+
     requestAnimationFrame(draw);
+}
+
+function rX(shape) {
+    shape = mult(shape, rotateX(90));
+    draw();
+}
+
+function rY(shape) {
+    shape = mult(shape, rotateY(90));
+    draw();
+}
+
+function rZ(shape) {
+    shape = mult(shape, rotateZ(90));
+    draw();
 }
 
 
@@ -358,7 +428,7 @@ function endgame() {
     x.style.display = "block";
     //enable startbutton
     //compare scores to update highscore
-    if(document.getElementById("highscore").value <  document.getElementById("userscore").value){
+    if (document.getElementById("highscore").value < document.getElementById("userscore").value) {
         document.getElementById("highscore").value = score;
     }
 
@@ -374,10 +444,10 @@ function shoot() {
         if (t % 2 === 0) {
             score = score - 75;
             scoreText.value = score;
-            document.getElementById('image2').style.display = 'block';
-            
+            document.getElementById('blocked').style.display = 'block';
+
         } else {
-            document.getElementById('image2').style.display = 'none';
+            document.getElementById('blocked').style.display = 'none';
             lightShow();
             score = score + 100;
             scoreText.value = score;

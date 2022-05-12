@@ -84,7 +84,7 @@
     
     <!--By changing the JSON file, can view different objects-->
     <script type="text/javascript" src="models/HoopsArcade3.js"></script>
-    <script type="text/javascript" src="models/air1.js"></script>
+    <script type="text/javascript" src="models/air+1.js"></script>
     <script type="text/javascript" src="shapes.js"></script>
 	<script type="text/javascript" src="CS371utils.js"></script>
 	<script defer type="text/javascript" src="Arena.js"></script>
@@ -106,12 +106,18 @@
 	<div><label for="timertext">Timer: </label>
 	<input type="text" id="timertext" name="timertext" value = "30 sec" readonly></div>
 	
-    <img id="image2" src = "textures/Blocked-PNG-HD-Quality.png" width="200" height="200" hidden>
+    <img id="blocked" src = "textures/Blocked-PNG-HD-Quality.png" width="200" height="200" hidden>
     <button id = "restartButton" onclick="startgame()" hidden>Restart Game</button>   
     <button id = "startButton" onclick="startgame()">Start Game</button>
+
+    <button id= "xButton">Rotate X</button>
+      <button id= "yButton">Rotate Y</button>
+      <button id= "zButton">Rotate Z</button>
     
 	
-    <img id = "image" src = "textures/color-spectrum-default.png" hidden>
+    <img id = "image1" src = "textures/color-spectrum-default.png" hidden>
+    <img id = "image0" src = "textures/purple_galaxy_texture_by_sweetlysecret_d8i0t81.png" hidden>
+    <img id = "image2" src = "textures/background.jpg" hidden>
 </body>
 </html>
 
