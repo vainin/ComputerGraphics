@@ -4,7 +4,7 @@ let gl;
 const TIME_LIMIT = 10;
 
 let near = -100;
-let far = 100;
+let far = 200;
 let left = -100.0;
 let right = 100.0;
 let ytop = 100.0;
@@ -33,8 +33,10 @@ let uniformColor;
 
 let coords = myHoop.vertices[0].values;
 let indices = myHoop.connectivity[0].indices;
+let normals = myHoop.vertices[1].values;
+let texcoord = myHoop.vertices[2].values;
 
-let normals;
+
 
 let program;
 let vaos = [];
@@ -45,8 +47,8 @@ let textures = [];
 
 let machine = {
     positions: coords,
-    normals: coords,
-    texcoords: coords,
+    normals: normals,
+    texcoords: texcoord,
     indices: indices,
 };
 
@@ -59,8 +61,8 @@ let texcoord2 = myShoe.vertices[2].values;
 
 let shoe = {
     positions: coords2,
-    normals: coords2,
-    texcoords: coords2,
+    normals: normals2,
+    texcoords: texcoord2,
     indices: indices2,
 }
 
@@ -72,16 +74,16 @@ let lightSpecular = vec4(0.9, 0.9, 0.9, 1.0);
 
 let lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
 
-let materialDiffuse = [vec4(0, 0.2, 0, 1.0),
+let materialDiffuse = [vec4(1, 1, 1, 1.0),
 vec4(0.2, 1, 1.0, 1.0),
 vec4(0.2, 0.2, 1, 1.0),
 vec4(.75, .24, 10, 1.0)];
 
-let materialAmbient = [vec4(1, .5, 1.0, 1.0),
+let materialAmbient = [vec4(1, 1, 1, 1.0),
 vec4(0.2, 1, 1.0, 1.0),
 vec4(0.2, 0.2, 1, 1.0),
 vec4(.75, .24, 1, 1.0)];
-let materialSpecular = [vec4(1, 1, 1.0, 1.0),
+let materialSpecular = [vec4(1, 1, 1, 1.0),
 vec4(0.2, 1, 1.0, 1.0),
 vec4(0.2, 0.2, 1, 1.0),
 vec4(.75, .24, 1, 1.0)];
@@ -194,6 +196,22 @@ function init() {
         textures.push(configureTexture(pic,program));
     }
 
+    // buttons for moving viewer and changing size
+    document.getElementById("Button1").onclick = function () { near *= 1.02 };
+    document.getElementById("Button2").onclick = function () { near *= 0.98 };
+    document.getElementById("Button13").onclick = function () { far *= 1.02; };
+    document.getElementById("Button14").onclick = function () { far *= 0.98; };
+    document.getElementById("Button3").onclick = function () { radius *= 1.1; };
+    document.getElementById("Button4").onclick = function () { radius *= 0.9; };
+    document.getElementById("Button5").onclick = function () { theta += rotation_by_5_deg; };
+    document.getElementById("Button6").onclick = function () { theta -= rotation_by_5_deg; };
+    document.getElementById("Button7").onclick = function () { phi += rotation_by_5_deg; };
+    document.getElementById("Button8").onclick = function () { phi -= rotation_by_5_deg; };
+    document.getElementById("Button9").onclick = function () { left *= 0.9; right *= 0.9; };
+    document.getElementById("Button10").onclick = function () { left *= 1.1; right *= 1.1; };
+    document.getElementById("Button11").onclick = function () { ytop *= 0.9; bottom *= 0.9; };
+    document.getElementById("Button12").onclick = function () { ytop *= 1.1; bottom *= 1.1; };
+
     //set up uniform variables
     uniformModelView = gl.getUniformLocation(program, "u_modelViewMatrix");
     uniformProjection = gl.getUniformLocation(program, "u_projectionMatrix");
@@ -216,11 +234,18 @@ function init() {
 function setUpShapes() {
     // shapes[1][1] = mult(shapes[1][1], rotateZ(90));
     // shapes[1][1] = mult(shapes[1][1], rotateY(90));
-     //shapes[1][1] = mult(shapes[1][1], rotateZ(90));
+    shapes[1][1] = mult(shapes[1][1], rotateZ(90));
     // shapes[1][1] = mult(shapes[1][1],translate(1,0,-1));
-    shapes[0][1] = mult(shapes[0][1],translate(0,0,-10));
+    shapes[0][1] = mult(shapes[0][1],translate(0,-65,0));
     shapes[0][1] = mult(shapes[0][1], rotateY(-90));
-    shapes[0][1] = mult(shapes[0][1], scalem(3,3,3));
+    shapes[0][1] = mult(shapes[0][1], scalem(5,5,5));
+    theta += rotation_by_5_deg;
+    for(let i = 0; i < 5; i++){
+        ytop *= 0.9;
+        bottom *= 0.9;
+        left *= 0.9; 
+        right *= 0.9;
+    }
 }
 
 function lR() {
@@ -336,50 +361,6 @@ function setUpVertexObject(shape) {
     // Finalize the vao; not required, but considered good practice
     gl.bindVertexArray(null);
     return vao;
-}
-
-
-
-// This function tries to guess what the appropriate viewing
-// parameters should be based on the overall values of the
-// coordinates
-function setViewParams(vertices) {
-    let xmin = Infinity;
-    let xmax = -Infinity;
-    let ymin = Infinity;
-    let ymax = -Infinity;
-    let zmin = Infinity;
-    let zmax = -Infinity;
-    for (let i = 0; i < vertices.length; i = i + 3) {
-        if (vertices[i] < xmin)
-            xmin = vertices[i];
-        else if (vertices[i] > xmax)
-            xmax = vertices[i];
-        if (vertices[i + 1] < ymin)
-            ymin = vertices[i + 1];
-        else if (vertices[i + 1] > ymax)
-            ymax = vertices[i + 1];
-        if (vertices[i + 2] < zmin)
-            zmin = vertices[i + 2];
-        else if (vertices[i + 2] > zmax)
-            zmax = vertices[i + 2];
-    }
-
-    /* translate the center of the object to the origin */
-    let centerX = (xmin + xmax) / 2;
-    let centerY = (ymin + ymax) / 2;
-    let centerZ = (zmin + zmax) / 2;
-    let max = Math.max(centerX - xmin, xmax - centerX);
-    max = Math.max(max, Math.max(centerY - ymin, ymax - centerY));
-    max = Math.max(max, Math.max(centerZ - zmin, zmax - centerZ));
-    let margin = max * 0.2;
-    left = -(max + margin);
-    right = max + margin;
-    bottom = -(max + margin);
-    ytop = max + margin;
-    far = -(max + margin);
-    near = max + margin;
-    radius = max + margin;
 }
 
 //below is needed code
