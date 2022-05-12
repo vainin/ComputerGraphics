@@ -31,8 +31,8 @@ let uniformModelView, uniformProjection;
 let modelViewMatrix, projectionMatrix;
 let uniformColor;
 
-let coords = myMesh2.vertices[0].values;
-let indices = myMesh2.connectivity[0].indices;
+let coords = myHoop.vertices[0].values;
+let indices = myHoop.connectivity[0].indices;
 
 let normals;
 
@@ -129,14 +129,10 @@ function init() {
         [createSphereVertices(1, 30, 30),  mat4()]
     ];
 
-    // shapes = [
-    //     [shoe, mat4()]
-    // ];
-
-    shapes[1][1] = mult(shapes[0][1], rotateZ(90));
-    shapes[1][1] = mult(shapes[0][1], rotateY(90));
-    shapes[1][1] = mult(shapes[0][1], rotateZ(90));
-    shapes[1][1] = mult(shapes[0][1],scalem(10,10,10));
+   
+    
+    setUpShapes();
+    
 
    
 
@@ -158,19 +154,6 @@ function init() {
 
     document.onkeydown = function (ev) { keydown(ev); };
 
-    // buttons for moving viewer and changing size
-    document.getElementById("Button1").onclick = function () { near *= 1.02; far *= 1.02; };
-    document.getElementById("Button2").onclick = function () { near *= 0.98; far *= 0.98; };
-    document.getElementById("Button3").onclick = function () { radius *= 1.1; };
-    document.getElementById("Button4").onclick = lR();
-    document.getElementById("Button5").onclick = function () { theta += rotation_by_5_deg; };
-    document.getElementById("Button6").onclick = function () { theta -= rotation_by_5_deg; };
-    document.getElementById("Button7").onclick = function () { phi += rotation_by_5_deg; };
-    document.getElementById("Button8").onclick = function () { phi -= rotation_by_5_deg; };
-    document.getElementById("Button9").onclick = function () { left *= 0.9; right *= 0.9; };
-    document.getElementById("Button10").onclick = function () { left *= 1.1; right *= 1.1; };
-    document.getElementById("Button11").onclick = function () { ytop *= 0.9; bottom *= 0.9; };
-    document.getElementById("Button12").onclick = function () { ytop *= 1.1; bottom *= 1.1; };
 
     //set up screen
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -182,6 +165,16 @@ function init() {
     gl.enable(gl.POLYGON_OFFSET_FILL);
     gl.polygonOffset(1.0, 2.0);
     draw();
+}
+
+function setUpShapes(){
+    // shapes[1][1] = mult(shapes[1][1], rotateZ(90));
+    // shapes[1][1] = mult(shapes[1][1], rotateY(90));
+    // shapes[1][1] = mult(shapes[1][1], rotateZ(90));
+    // shapes[1][1] = mult(shapes[1][1],translate(1,0,-100));
+    // shapes[0][1] = mult(shapes[0][1],translate(1,0,-10));
+    //shapes[0][1] = mult(shapes[0][1],scalem(5,5,5));
+    shapes[0][1] = mult(shapes[0][1],rotateY(90));
 }
 
 function lR() {
