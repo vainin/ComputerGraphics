@@ -84,6 +84,7 @@
     
     <!--By changing the JSON file, can view different objects-->
     <script type="text/javascript" src="models/HoopsArcade.js"></script>
+    <script type="text/javascript" src="models/air1.js"></script>
     <script type="text/javascript" src="shapes.js"></script>
 	<script type="text/javascript" src="CS371utils.js"></script>
 	<script defer type="text/javascript" src="Arena.js"></script>
@@ -95,7 +96,7 @@
 	<canvas id="gl-canvas" style="float:left; margin-right: 5px;" width="600" height="600">>
 		Oops ... your browser doesn't support the HTML5 canvas element
 	</canvas>
-    <div style="display: none;">
+    <div>
             <button id = "Button1">Increase Near and Far</button>
             <button id = "Button2">Decrease Near and Far</button>
             <button id = "Button3">Increase R</button>
@@ -123,12 +124,12 @@
 	<div><label for="timertext">Timer: </label>
 	<input type="text" id="timertext" name="timertext" value = "30 sec" readonly></div>
 	
-    <img id = "image2" src = "textures/Blocked-PNG-HD-Quality.png" width="200" height="200" hidden>
+    <img id="image2" src = "textures/Blocked-PNG-HD-Quality.png" width="200" height="200" hidden>
     <button id = "restartButton" onclick="startgame()" hidden>Restart Game</button>   
     <button id = "startButton" onclick="startgame()">Start Game</button>
     
 	
-    <img id = "image" src = "textures/purple_galaxy_texture_by_sweetlysecret_d8i0t81.png" hidden>
+    <img id = "image" src = "textures/color-spectrum-default.png" hidden>
 </body>
 </html>
 

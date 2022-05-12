@@ -4,10 +4,10 @@ let gl;
 const TIME_LIMIT = 10;
 
 let near = -100;
-let far = 150;
+let far = 100;
 let left = -100.0;
 let right = 100.0;
-let ytop = 150.0;
+let ytop = 100.0;
 let bottom = -100.0;
 
 let timelimit = 60;
@@ -48,6 +48,19 @@ let machine = {
     texcoords: coords,
     indices: indices,
 };
+
+
+
+let coords2 = shoeMesh.vertices[0].values;
+let indices2 = shoeMesh.connectivity[0].indices;
+
+let shoe = {
+    positions: coords2,
+    normals: coords2,
+    texcoords: coords2,
+    indices: indices2,
+}
+
 
 //light 
 let lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0); // white light
@@ -91,13 +104,11 @@ function configureTexture(image, program) {
     gl.uniform1i(gl.getUniformLocation(program, "u_textureMap"), 0);
 }
 
-function move() {
-    modelViewMatrix = mult(modelViewMatrix, rotateX(45));
-}
 
 
 function init() {
-
+    console.log(shoe);
+    console.log(machine);
     //Get graphics context
     let canvas = document.getElementById("gl-canvas");
     let options = {  // no need for alpha channel, but note depth buffer enabling
@@ -113,9 +124,21 @@ function init() {
     gl.useProgram(program);
 
     shapes = [
-        [machine, rotateY(90)],
-        [createSphereVertices(15, 30, 30), translate(0, 0, 5)]
+        [machine, mat4()],
+        [shoe,  mat4()],
+        [createSphereVertices(1, 30, 30),  mat4()]
     ];
+
+    // shapes = [
+    //     [shoe, mat4()]
+    // ];
+
+    shapes[1][1] = mult(shapes[0][1], rotateZ(90));
+    shapes[1][1] = mult(shapes[0][1], rotateY(90));
+    shapes[1][1] = mult(shapes[0][1], rotateZ(90));
+    shapes[1][1] = mult(shapes[0][1],scalem(10,10,10));
+
+   
 
 
 
@@ -188,13 +211,7 @@ function draw() {
         gl.uniformMatrix4fv(uniformModelView, false, flatten(modelViewMatrix));
         drawVertexObject(vaos[i], shapes[i][0].indices.length, materialAmbient[i], materialDiffuse[i], materialSpecular[i], materialShininess / (i + 1));
     }
-    if (!done) {
-        for (let i = 0; i < 20; i++) {
-            lR();
-        }
-
-        done = true;
-    }
+    
     requestAnimationFrame(draw);
 }
 
@@ -364,11 +381,10 @@ function shoot() {
         if (t % 2 === 0) {
             score = score - 75;
             scoreText.value = score;
-            var x = document.getElementById("image2");
-            x.style.display = "block";
-            sleep(75);
-            x.style.display = "none";
+            document.getElementById('image2').style.display = 'block';
+            
         } else {
+            document.getElementById('image2').style.display = 'none';
             lightShow();
             score = score + 100;
             scoreText.value = score;
@@ -380,19 +396,19 @@ function shoot() {
 async function lightShow() {
     lightDiffuse = vec4(0, 1.0, 1.0, 1.0);
     lightPosition = vec4(0.5, 1.0, 1.0, 0.0);
-    await sleep(50);
+    await sleep(70);
     lightDiffuse = vec4(0, 1.0, 1.0, 1.0);
     lightPosition = vec4(0.75, 1.0, 1.0, 0.0);
-    await sleep(50);
+    await sleep(70);
     lightDiffuse = vec4(1.0, 0, 1.0, 1.0);
     lightPosition = vec4(1.0, 1.0, 0.0, 0.0);
-    await sleep(50);
+    await sleep(70);
     lightDiffuse = vec4(0, 1.0, 1.0, 1.0);
     lightPosition = vec4(1.0, 1.0, 0.75, 0.0);
-    await sleep(50);
+    await sleep(70);
     lightDiffuse = vec4(1.0, 1.0, 0, 1.0);
     lightPosition = vec4(1.0, 0.0, 1.0, 0.0);
-    await sleep(50);
+    await sleep(70);
     lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
     lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
 }
