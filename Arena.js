@@ -54,7 +54,8 @@ let machine = {
 
 let coords2 = myShoe.vertices[0].values;
 let indices2 = myShoe.connectivity[0].indices;
-let normals2 = 
+let normals2 = myShoe.vertices[1].values;
+let texcoord2 = myShoe.vertices[2].values;
 
 let shoe = {
     positions: coords2,
