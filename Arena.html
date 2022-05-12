@@ -7,14 +7,13 @@
 
 	<!--   Begin GLSL 3.0 Shader code -->
 	<script id="vertex-shader" type="x-shader/x-vertex">
-		#version 300 es
-		in vec4 a_coords;
+        #version 300 es
+        in  vec4 a_coords;
         in  vec3 a_normals;
         in  vec2 a_texCoord;
- 
+
         uniform mat4 u_modelViewMatrix;
         uniform mat4 u_projectionMatrix;
-
         uniform vec4 ambientProduct, diffuseProduct, specularProduct;
         uniform vec4 lightPosition;
         uniform float shininess;
@@ -62,7 +61,7 @@
             t_color = ambient + diffuse + specular;
             
             t_color.a = 1.0;
-        }        
+        }    
 
 	</script>
 
@@ -84,10 +83,8 @@
 	<!--   JS include files -->
     
     <!--By changing the JSON file, can view different objects-->
-    <script type="text/javascript" src="models/HoopsArcade2 - Copy.js"></script>
-    <!--<script type="text/javascript" src="models/batwing.js"></script>-->
-    <!--<script type="text/javascript" src="models/vw-model.js"></script>-->
-
+    <script type="text/javascript" src="models/HoopsArcade.js"></script>
+    <script type="text/javascript" src="shapes.js"></script>
 	<script type="text/javascript" src="CS371utils.js"></script>
 	<script defer type="text/javascript" src="Arena.js"></script>
     <link rel="stylesheet" href="homeStyle.css">
@@ -98,7 +95,7 @@
 	<canvas id="gl-canvas" style="float:left; margin-right: 5px;" width="600" height="600">>
 		Oops ... your browser doesn't support the HTML5 canvas element
 	</canvas>
-    <div>
+    <div style="display: none;">
             <button id = "Button1">Increase Near and Far</button>
             <button id = "Button2">Decrease Near and Far</button>
             <button id = "Button3">Increase R</button>
@@ -117,10 +114,21 @@
             <p>In case you don't see the entire object, you may have to play with the Near, Far, and R settings to get the appropriate view volume </p>            
 	</div>
 
-    <canvas id="gl-canvas" width="450" height="450">
-        Oops ... your browser doesn't support the HTML5 canvas element
-    </canvas>
-    <img id = "image" src = "textures/dummy.png" hidden>
+    <h2>Shoot and Score!</h2>
+    
+	<div><label> High Score: </label>
+	<input type="text" id="highscore" name="highscore" value = "0" readonly></div>
+	<div><label> User Score: </label>
+	<input type="text" id="userscore" name="userscore" value = "0" readonly></div>
+	<div><label for="timertext">Timer: </label>
+	<input type="text" id="timertext" name="timertext" value = "30 sec" readonly></div>
+	
+    <img id = "image2" src = "textures/Blocked-PNG-HD-Quality.png" width="200" height="200" hidden>
+    <button id = "restartButton" onclick="startgame()" hidden>Restart Game</button>   
+    <button id = "startButton" onclick="startgame()">Start Game</button>
+    
+	
+    <img id = "image" src = "textures/purple_galaxy_texture_by_sweetlysecret_d8i0t81.png" hidden>
 </body>
 </html>
 

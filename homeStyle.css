@@ -5,7 +5,3 @@ body {
     background-image: url("textures/background.jpg");
 }
 
-canvas {
-    margin: auto;
-    width: 50%;
-}
