@@ -42,6 +42,8 @@ let texture;
 
 let coords = myHoop.vertices[0].values;
 let indices = myHoop.connectivity[0].indices;
+let normals = myHoop.vertices[1].values;
+let texcoord = myHoop.vertices[2].values;
 
 let normals;
 
@@ -53,18 +55,20 @@ let tex;
 
 let machine = {
     positions: coords,
-    normals: coords,
-    texcoords: coords,
+    normals: normals,
+    texcoords: texcoord,
     indices: indices,
 };
 
-let coords2 = shoeMesh.vertices[0].values;
-let indices2 = shoeMesh.connectivity[0].indices;
+let coords2 = myShoe.vertices[0].values;
+let indices2 = myShoe.connectivity[0].indices;
+let normals2 = myShoe.vertices[1].values;
+let texcoord2 = myShoe.vertices[2].values;
 
 let shoe = {
     positions: coords2,
-    normals: coords2,
-    texcoords: coords2,
+    normals: normals2,
+    texcoords: texcoord2,
     indices: indices2,
 }
 
