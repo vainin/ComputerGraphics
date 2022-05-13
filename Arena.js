@@ -55,8 +55,8 @@ let tex;
 
 let machine = {
     positions: coords,
-    normals: normals,
-    texcoords: texcoord,
+    normals: coords,
+    texcoords: coords,
     indices: indices,
 };
 
@@ -67,8 +67,8 @@ let texcoord2 = myShoe.vertices[2].values;
 
 let shoe = {
     positions: coords2,
-    normals: normals2,
-    texcoords: texcoord2,
+    normals: coords2,
+    texcoords: coords2,
     indices: indices2,
 }
 
