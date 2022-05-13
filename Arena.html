@@ -92,12 +92,12 @@
 </head>
 
 <body onload="init();">
-	<h2>Shoot n' Score</h2>
+	<h2>Shoot n' Score VS George Lopez!</h2>
 	<canvas id="gl-canvas" style="float:left; margin-right: 5px;" width="600" height="600">>
 		Oops ... your browser doesn't support the HTML5 canvas element
 	</canvas>
 
-    <h2>Shoot and Score!</h2>
+    <h2>Use Spacebar to Shoot!</h2>
     
 	<div><label> High Score: </label>
 	<input type="text" id="highscore" name="highscore" value = "0" readonly></div>
@@ -107,37 +107,20 @@
 	<input type="text" id="timertext" name="timertext" value = "30 sec" readonly></div>
 	
     <img id="blocked" src = "textures/Blocked-PNG-HD-Quality.png" width="200" height="200" hidden>
+    <img id="fire1" src = "textures/fire.png" width="200" height="200" hidden>
+    <img id="fire2" src = "textures/fire.png" width="200" height="200" hidden>
+    <img id="fire3" src = "textures/fire.png" width="200" height="200" hidden>
     <button id = "restartButton" onclick="startgame()" hidden>Restart Game</button>   
     <button id = "startButton" onclick="startgame()">Start Game</button>
 
-    <button id= "xButton">Rotate X</button>
-      <button id= "yButton">Rotate Y</button>
-      <button id= "zButton">Rotate Z</button>
+    
     
 	
-    <img id = "image0" src = "textures/background.jpg" hidden>
-    <img id = "image2" src = "textures/color-spectrum-default.png" hidden>
-    <img id = "image1" src = "textures/BasketballArcadeTex_D.jpeg" hidden>
-    <div>
-        <button id = "Button1">Increase Near</button>
-        <button id = "Button2">Decrease Near</button>
-        <button id = "Button13">Increase Far</button>
-        <button id = "Button14">Decrease Far</button>
-        <button id = "Button3">Increase R</button>
-        <button id = "Button4">Decrease R</button>
-
-        <br>
-        <button id = "Button5">Increase theta</button>
-        <button id = "Button6">Decrease theta</button>
-        <button id = "Button7">Increase phi</button>
-        <button id = "Button8">Decrease phi</button>
-        <br>
-        <button id = "Button9">Wider</button>
-        <button id = "Button10">Narrower</button>
-        <button id = "Button11">Higher</button>
-        <button id = "Button12">Shorter</button>
-        <p>In case you don't see the entire object, you may have to play with the Near, Far, and R settings to get the appropriate view volume </p> 
-        <p id="nearFar">The near and far values are displayed here.</p>            
+    <img id = "image0" src = "textures/purple_galaxy_texture_by_sweetlysecret_d8i0t81.png" hidden>
+    <img id = "image3" src = "textures/color-spectrum-default.png" hidden>
+    <img id = "image1" src = "textures/basketball.jpg" hidden>
+    <img id = "image2" src = "textures/Screen_Shot_2020_12_22_at_1.33.12_PM.jpg" hidden>
+               
 </div>
 </body>
 </html>

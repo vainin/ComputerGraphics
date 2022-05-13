@@ -1,7 +1,7 @@
 
 let canvas;
 let gl;
-const TIME_LIMIT = 10;
+const TIME_LIMIT = 30;
 
 let near = -100;
 let far = 200;
@@ -51,9 +51,6 @@ let machine = {
     texcoords: texcoord,
     indices: indices,
 };
-
-
-
 let coords2 = myShoe.vertices[0].values;
 let indices2 = myShoe.connectivity[0].indices;
 let normals2 = myShoe.vertices[1].values;
@@ -66,6 +63,8 @@ let shoe = {
     indices: indices2,
 }
 
+let streak = 0;
+
 
 //light 
 let lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0); // white light
@@ -75,70 +74,41 @@ let lightSpecular = vec4(0.9, 0.9, 0.9, 1.0);
 let lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
 
 let materialDiffuse = [vec4(1, 1, 1, 1.0),
-vec4(0.2, 1, 1.0, 1.0),
-vec4(0.2, 0.2, 1, 1.0),
-vec4(.75, .24, 10, 1.0)];
+vec4(0.8, 1, 1.0, 1.0),
+vec4(1, 1, 1, 1.0),
+vec4(1, 1, 1, 1.0)];
 
 let materialAmbient = [vec4(1, 1, 1, 1.0),
-vec4(0.2, 1, 1.0, 1.0),
-vec4(0.2, 0.2, 1, 1.0),
-vec4(.75, .24, 1, 1.0)];
+vec4(1, 1, 1.0, 1.0),
+vec4(1, 1, 1, 1.0),
+vec4(1, 1, 1, 1.0)];
 let materialSpecular = [vec4(1, 1, 1, 1.0),
-vec4(0.2, 1, 1.0, 1.0),
-vec4(0.2, 0.2, 1, 1.0),
-vec4(.75, .24, 1, 1.0)];
+vec4(1, 1, 1.0, 1.0),
+vec4(1, 1, 1, 1.0),
+vec4(1, 1, 1, 1.0)];
 let materialShininess = 100.0;
 
-function configureTexture( image, program, textureNum ) {
+
+
+function configureTexture(image, program) {
     let texture = gl.createTexture();
 
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    
-    //Flip the Y values to match the WebGL coordinates
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    
-    //Specify the image as a texture array:
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-         
-    //Set filters and parameters
-    gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT );
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT );
-    
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT );
-    
-    //Link texture to a sampler in fragment shader
-    return texture;
-}
-
-function configureTexture( image, program ) {
-    let texture = gl.createTexture();
-
-    gl.activeTexture( gl.TEXTURE0 );
+    gl.activeTexture(gl.TEXTURE0);
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    
+
     // Flip the Y values to match the WebGL coordinates
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    
+
     // Specify the image as a texture array:
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-         
+
     // Set filters and parameters
     gl.generateMipmap(gl.TEXTURE_2D);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT );
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT );
-    
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE );
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT );
-    
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+
     // Link texture to a sampler in fragment shader
     gl.uniform1i(gl.getUniformLocation(program, "u_textureMap"), 0);
 
@@ -149,7 +119,7 @@ function configureTexture( image, program ) {
 
 function init() {
 
-    
+
 
     //Get graphics context
     let canvas = document.getElementById("gl-canvas");
@@ -168,22 +138,14 @@ function init() {
     shapes = [
         [machine, mat4()],
         [shoe, mat4()],
-        [createSphereVertices(1, 30, 30), mat4()]
+        [createSphereVertices(1, 30, 30), mat4()],
+        [createCubeVertices(5, 30, 30), mat4()]
     ];
 
 
 
     setUpShapes();
 
-    document.getElementById("xButton").onclick = function () {
-        rX(shapes[0][1]);
-    };
-    document.getElementById("yButton").onclick = function () {
-        rY(shapes[0][1]);
-    };
-    document.getElementById("zButton").onclick = function () {
-        rZ(shapes[0][1]);
-    };
 
     for (let i = 0; i < shapes.length; i++) {
         vaos.push(setUpVertexObject(shapes[i][0]));
@@ -191,26 +153,12 @@ function init() {
         let pic = new Image();
         pic.src = document.getElementById("image" + i).src;
         pic.onload = function () {
-            configureTexture(pic, program, i);
+            configureTexture(pic, program);
         }
-        textures.push(configureTexture(pic,program));
+        textures.push(configureTexture(pic, program));
     }
 
-    // buttons for moving viewer and changing size
-    document.getElementById("Button1").onclick = function () { near *= 1.02 };
-    document.getElementById("Button2").onclick = function () { near *= 0.98 };
-    document.getElementById("Button13").onclick = function () { far *= 1.02; };
-    document.getElementById("Button14").onclick = function () { far *= 0.98; };
-    document.getElementById("Button3").onclick = function () { radius *= 1.1; };
-    document.getElementById("Button4").onclick = function () { radius *= 0.9; };
-    document.getElementById("Button5").onclick = function () { theta += rotation_by_5_deg; };
-    document.getElementById("Button6").onclick = function () { theta -= rotation_by_5_deg; };
-    document.getElementById("Button7").onclick = function () { phi += rotation_by_5_deg; };
-    document.getElementById("Button8").onclick = function () { phi -= rotation_by_5_deg; };
-    document.getElementById("Button9").onclick = function () { left *= 0.9; right *= 0.9; };
-    document.getElementById("Button10").onclick = function () { left *= 1.1; right *= 1.1; };
-    document.getElementById("Button11").onclick = function () { ytop *= 0.9; bottom *= 0.9; };
-    document.getElementById("Button12").onclick = function () { ytop *= 1.1; bottom *= 1.1; };
+
 
     //set up uniform variables
     uniformModelView = gl.getUniformLocation(program, "u_modelViewMatrix");
@@ -232,31 +180,36 @@ function init() {
 }
 
 function setUpShapes() {
-    // shapes[1][1] = mult(shapes[1][1], rotateZ(90));
-    // shapes[1][1] = mult(shapes[1][1], rotateY(90));
     shapes[1][1] = mult(shapes[1][1], rotateZ(90));
-    // shapes[1][1] = mult(shapes[1][1],translate(1,0,-1));
-    shapes[0][1] = mult(shapes[0][1],translate(0,-65,0));
+    shapes[1][1] = mult(shapes[1][1], rotateY(90));
+
+    shapes[1][1] = mult(shapes[1][1], translate(.5, -7, 2));
+    shapes[0][1] = mult(shapes[0][1], translate(0, -65, 0));
     shapes[0][1] = mult(shapes[0][1], rotateY(-90));
-    shapes[0][1] = mult(shapes[0][1], scalem(5,5,5));
+    shapes[0][1] = mult(shapes[0][1], scalem(5, 5, 5));
     theta += rotation_by_5_deg;
-    for(let i = 0; i < 5; i++){
+    for (let i = 0; i < 5; i++) {
         ytop *= 0.9;
         bottom *= 0.9;
-        left *= 0.9; 
+        left *= 0.9;
         right *= 0.9;
     }
+    shapes[2][1] = mult(shapes[2][1], scalem(1.5, 1.5, 1.5));
+    shapes[2][1] = mult(shapes[2][1], translate(.5, -7, 2));
+
+    shapes[3][1] = mult(shapes[3][1], translate(1, -7, 10));
+    shapes[3][1] = mult(shapes[3][1], rotateZ(180));
+
+
+
+
 }
 
-function lR() {
-    radius *= 0.9;
-}
 
-function drawTexture(textureObj, program, i)
-{
-    gl.activeTexture( gl.TEXTURE0 + i );
+function drawTexture(texture, program, i) {
+    gl.activeTexture(gl.TEXTURE0 + i);
 
-    gl. bindTexture(gl.TEXTURE_2D, textureObj);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
 
     gl.uniform1i(gl.getUniformLocation(program, "u_textureMap"), i);
 }
@@ -282,29 +235,12 @@ function draw() {
     for (let i = 0; i < shapes.length; i++) {
         modelViewMatrix = (mult(modelViewMatrix, shapes[i][1]));
         gl.uniformMatrix4fv(uniformModelView, false, flatten(modelViewMatrix));
-        drawVertexObject(vaos[i], shapes[i][0].indices.length, materialAmbient[i], materialDiffuse[i], materialSpecular[i], materialShininess / (i + 1));
+        drawVertexObject(vaos[i], shapes[i][0].indices.length, materialAmbient[i], materialDiffuse[i], materialSpecular[i], materialShininess);
         drawTexture(textures[i], program, i);
     }
 
     requestAnimationFrame(draw);
 }
-
-function rX(shape) {
-    shape = mult(shape, rotateX(90));
-    draw();
-}
-
-function rY(shape) {
-    shape = mult(shape, rotateY(90));
-    draw();
-}
-
-function rZ(shape) {
-    shape = mult(shape, rotateZ(90));
-    draw();
-}
-
-
 
 // Loads a VAO and draws it
 function drawVertexObject(vao, iLength, mA, mD, mS, s) {
@@ -384,7 +320,7 @@ function settimer() {
     }
 }
 function resetgame() {
-    timelimit = 10;
+    timelimit = 30;
     timegone = 0;
     score = 0;
     scoreText.value = score;
@@ -408,6 +344,10 @@ function endgame() {
     x.style.display = "none";
     x = document.getElementById("restartButton");
     x.style.display = "block";
+    document.getElementById('fire1').style.display = 'none';
+    document.getElementById('fire2').style.display = 'none';
+    document.getElementById('fire3').style.display = 'none';
+    document.getElementById('blocked').style.display = 'none';
     //enable startbutton
     //compare scores to update highscore
     if (document.getElementById("highscore").value < document.getElementById("userscore").value) {
@@ -426,34 +366,78 @@ function shoot() {
         if (t % 2 === 0) {
             score = score - 75;
             scoreText.value = score;
+            streak = 0;
+            document.getElementById('fire1').style.display = 'none';
+            document.getElementById('fire2').style.display = 'none';
+            document.getElementById('fire3').style.display = 'none';
             document.getElementById('blocked').style.display = 'block';
-
+            shootBall(true);
+            shootable = true;
         } else {
             document.getElementById('blocked').style.display = 'none';
             lightShow();
-            score = score + 100;
+            streak++;
+            switch (streak) {
+                case 1:
+                    document.getElementById('fire1').style.display = 'inline-block';
+                    break;
+                case 2:
+                    document.getElementById('fire2').style.display = 'inline-block';
+                    break;
+                case 3:
+                    document.getElementById('fire3').style.display = 'inline-block';
+                    break;
+
+            }
+            score = (score + 100) * streak;
             scoreText.value = score;
+            shootBall(false);
+            shootable = true;
+        }
+
+    }
+}
+
+async function shootBall(blocked) {
+    if (!blocked) {
+        for (let i = 0; i < 45; i = i + 5) {
+            await sleep(50);
+            shapes[2][1] = mult(shapes[2][1], translate(0, -0.5, 0.5));
+        }
+    } else {
+        for (let i = 0; i < 90; i = i + 5) {
+            await sleep(50);
+            shapes[2][1] = mult(shapes[2][1], translate(1, 0, 0));
+            shapes[1][1] = mult(shapes[1][1], translate(2.0, 0, 0));
         }
     }
-    shootable = true;
+    shapes[2][1] = mat4();
+    shapes[1][1] = mat4();
+    shapes[2][1] = mult(shapes[2][1], scalem(1.5, 1.5, 1.5));
+    shapes[2][1] = mult(shapes[2][1], translate(.5, -7, 2));
+    shapes[1][1] = mult(shapes[1][1], rotateZ(90));
+    shapes[1][1] = mult(shapes[1][1], rotateY(90));
+    shapes[1][1] = mult(shapes[1][1], translate(.5, -7, 2));
+
 }
 
 async function lightShow() {
-    lightDiffuse = vec4(0, 1.0, 1.0, 1.0);
-    lightPosition = vec4(0.5, 1.0, 1.0, 0.0);
-    await sleep(70);
-    lightDiffuse = vec4(0, 1.0, 1.0, 1.0);
-    lightPosition = vec4(0.75, 1.0, 1.0, 0.0);
-    await sleep(70);
-    lightDiffuse = vec4(1.0, 0, 1.0, 1.0);
-    lightPosition = vec4(1.0, 1.0, 0.0, 0.0);
-    await sleep(70);
-    lightDiffuse = vec4(0, 1.0, 1.0, 1.0);
-    lightPosition = vec4(1.0, 1.0, 0.75, 0.0);
-    await sleep(70);
-    lightDiffuse = vec4(1.0, 1.0, 0, 1.0);
-    lightPosition = vec4(1.0, 0.0, 1.0, 0.0);
-    await sleep(70);
+    lightDiffuse = vec4(0, .5, 0, 1.0);
+    lightPosition = vec4(0, 1.0, 1.0, 0.0);
+    await sleep(100);
+    lightDiffuse = vec4(0, 0.5, 0, 1.0);
+    lightPosition = vec4(0, 1.0, 0.0, 0.0);
+    await sleep(100);
+    lightDiffuse = vec4(1.0, 1, 1.0, 1.0);
+    lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
+    await sleep(100);
+    lightDiffuse = vec4(0, 0.1, 0, 1.0);
+    lightPosition = vec4(0, 1.0, 0.0, 0.0);
+    await sleep(100);
+    lightDiffuse = vec4(0, 1, 0, 1.0);
+    await sleep(100);
+    lightDiffuse = vec4(0, 1.0, 0, 1.0);
+
     lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
     lightPosition = vec4(1.0, 1.0, 1.0, 0.0);
 }

@@ -5,3 +5,6 @@ body {
     background-image: url("textures/background.jpg");
 }
 
+#highscore, #userscore,#timertext{
+   box-shadow:0 0 30px #474747;
+}
