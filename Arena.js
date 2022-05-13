@@ -148,15 +148,6 @@ function init() {
     setUpShapes();
 
 
-       //Initialize texture
-       let image = new Image();
-       image.src = document.getElementById("texImage").src; 
-       image.onload = function() {
-           configureTexture( image, program );
-       }
-
-
-
     for (let i = 0; i < shapes.length; i++) {
         vaos.push(setUpVertexObject(shapes[i][0]));
     }
